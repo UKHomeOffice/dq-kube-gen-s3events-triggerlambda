@@ -31,9 +31,10 @@ Run container
 ```
 docker run
 -e LAMBDA_FUNC=lambda-func-to-trigger
--e AWS_ACCESS_KEY_ID=ABCDEFGHIJLMNOP -e AWS_SECRET_ACCESS_KEY=aBcDe1234+fghijklm01
--e AWS_DEFAULT_REGION=eu-west-2 -e S3_BUCKET="s3-bucket-containing-files"
--e CSV_S3_FILE="some/prefix/athena-archive-list.csv"
+-e AWS_ACCESS_KEY_ID=ABCDEFGHIJLMNOP
+-e AWS_SECRET_ACCESS_KEY=aBcDe1234+fghijklm01
+-e AWS_DEFAULT_REGION=eu-west-2
+-e S3_BUCKET="s3-bucket-containing-files"
 -e LAST_MOD_DTTIME_START="2020-07-09 10:55:31"  
 -e LAST_MOD_DTTIME_END "2020-07-09 13:55:31"
 -e S3_PREFIX "parsed"
