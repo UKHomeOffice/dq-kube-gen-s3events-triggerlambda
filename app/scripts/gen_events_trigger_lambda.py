@@ -4,6 +4,114 @@ from datetime import datetime
 import pytz
 import json
 
+import os
+import sys
+import time
+import random
+import datetime
+import logging
+from logging.handlers import TimedRotatingFileHandler
+from dateutil.relativedelta import relativedelta
+from botocore.config import Config
+from botocore.exceptions import ClientError
+import urllib.request
+
+
+LOG_FILE = "/APP/gen-s3event-notification.log"
+
+"""
+Setup Logging
+"""
+LOGFORMAT = '%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s'
+FORM = logging.Formatter(LOGFORMAT)
+logging.basicConfig(
+    format=LOGFORMAT,
+    level=logging.INFO
+)
+LOGGER = logging.getLogger()
+if LOGGER.hasHandlers():
+    LOGGER.handlers.clear()
+LOGHANDLER = TimedRotatingFileHandler(LOG_FILE, when="midnight", interval=1, backupCount=7)
+LOGHANDLER.suffix = "%Y-%m-%d"
+LOGHANDLER.setFormatter(FORM)
+LOGGER.addHandler(LOGHANDLER)
+CONSOLEHANDLER = logging.StreamHandler()
+CONSOLEHANDLER.setFormatter(FORM)
+LOGGER.addHandler(CONSOLEHANDLER)
+LOGGER.info("Starting")
+
+LOG_GROUP_NAME = None
+LOG_STREAM_NAME = None
+
+
+CONFIG = Config(
+    retries=dict(
+        max_attempts=4
+    )
+)
+
+def send_message_to_slack(text):
+    """
+    Formats the text provides and posts to a specific Slack web app's URL
+    Args:
+        text : the message to be displayed on the Slack channel
+    Returns:
+        Slack API repsonse
+    """
+
+
+    try:
+        post = {
+            "text": ":fire: :sad_parrot: An error has occured in the *Athena Partition Maintenace* pod :sad_parrot: :fire:",
+            "attachments": [
+                {
+                    "text": "{0}".format(text),
+                    "color": "#B22222",
+                    "attachment_type": "default",
+                    "fields": [
+                        {
+                            "title": "Priority",
+                            "value": "High",
+                            "short": "false"
+                        }
+                    ],
+                    "footer": "Kubernetes API",
+                    "footer_icon": "https://platform.slack-edge.com/img/default_application_icon.png"
+                }
+            ]
+            }
+
+        ssm_param_name = 'slack_notification_webhook'
+        ssm = boto3.client('ssm', config=CONFIG)
+        try:
+            response = ssm.get_parameter(Name=ssm_param_name, WithDecryption=True)
+        except ClientError as err:
+            if err.response['Error']['Code'] == 'ParameterNotFound':
+                LOGGER.info('Slack SSM parameter %s not found. No notification sent', ssm_param_name)
+                return
+            else:
+                LOGGER.error("Unexpected error when attempting to get Slack webhook URL: %s", err)
+                return
+        if 'Value' in response['Parameter']:
+            url = response['Parameter']['Value']
+
+            json_data = json.dumps(post)
+            req = urllib.request.Request(
+                url,
+                data=json_data.encode('ascii'),
+                headers={'Content-Type': 'application/json'})
+            LOGGER.info('Sending notification to Slack')
+            response = urllib.request.urlopen(req)
+
+        else:
+            LOGGER.info('Value for Slack SSM parameter %s not found. No notification sent', ssm_param_name)
+            return
+
+    except Exception as err:
+        LOGGER.error(
+            'The following error has occurred on line: %s',
+            sys.exc_info()[2].tb_lineno)
+        LOGGER.error(str(err))
 
 def get_matching_s3_objects(bucket, prefix="", suffix="",stdt, endt):
     """
@@ -34,6 +142,7 @@ def get_matching_s3_objects(bucket, prefix="", suffix="",stdt, endt):
             try:
                 contents = page["Contents"]
             except KeyError:
+                LOGGER.error(str(KeyError))
                 break
 
             for obj in contents:
@@ -68,7 +177,7 @@ if __name__ == '__main__':
     wait_sec = os.environ['WAIT_SEC']
 
 
-    LOG_FILE = "/APP/gen-s3event-notification.log"
+    #LOG_FILE = "/APP/gen-s3event-notification.log"
     #os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
     #'2020-07-09 10:55:31'
 
@@ -113,5 +222,7 @@ if __name__ == '__main__':
 
             #Introduce Wait. Don't trigger the next event immediately
 
-        except:
+        except Exception as err:
+            LOGGER.error(str(err))
+            send_message_to_slack(err)
             print("Error Occured")
