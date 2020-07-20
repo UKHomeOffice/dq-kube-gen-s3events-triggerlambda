@@ -3,12 +3,12 @@ Repo to Generate S3 notification events for Files already in S3 and Trigger a La
 
 [![Docker Repository on Quay](https://quay.io/repository/ukhomeofficedigital/dq-nats-sftp-python/status "Docker Repository on Quay")](https://quay.io/repository/ukhomeofficedigital/dq-nats-sftp-python)
 
-A collection of Docker containers running a data pipeline.
+Docker container that can generate S3 notifications events based on a range of last modified timestamps and Trigger a lambda passing that event as an input to the lambda function.
 Tasks include:
-- SFTP LIST files
-- SFTP GET from a remote SFTP server
-- Running virus check on each file pulled from SFTP by sending them to ClamAV API
-- AWS S3 PUT files to an S3 bucket
+- Reading  Files in an S3 bucket based on a Prefix and suffix.
+- Filter files based on a time range.
+- Generate S3 notification events for these files(s3 objects)
+- Trigger a lambda function by passing the event data as an input.
 
 ## Dependencies
 
@@ -16,8 +16,36 @@ Tasks include:
 - Python3.7
 - Drone
 - AWS CLI
-- AWS Keys with PUT access to S3
+- AWS Keys with GET access to S3 and Invoke access on AWS Lambda.
 - Kubernetes
+
+## Example usage
+### Running in Docker
+
+Build container
+```
+docker build -t gens3events app/
+```
+
+Run container
+```
+docker run
+-e LAMBDA_FUNC=lambda-func-to-trigger
+-e AWS_ACCESS_KEY_ID=ABCDEFGHIJLMNOP -e AWS_SECRET_ACCESS_KEY=aBcDe1234+fghijklm01
+-e AWS_DEFAULT_REGION=eu-west-2 -e S3_BUCKET="s3-bucket-containing-files"
+-e CSV_S3_FILE="some/prefix/athena-archive-list.csv"
+-e LAST_MOD_DTTIME_START="2020-07-09 10:55:31"  
+-e LAST_MOD_DTTIME_END "2020-07-09 13:55:31"
+-e S3_PREFIX "parsed"
+-e S3_SUFFIX "jsonl"
+-e WAIT_SEC "60"
+gens3events
+```
+
+## Useful commands
+Run a one time instance of the job:-
+```
+kubectl create job dq-athena-partition-maintenance --from=cronjob/dq-athena-partition-maintenance
 
 ## Structure
 
@@ -54,16 +82,6 @@ The POD consists of 3 (three) Docker containers responsible for handling data.
 | clamav-api | API for virus checks | N/A | 8080 |ACP |
 | clamav | Database for virus checks | N/A | 3310 |ACP |
 
-
-## Data flow
-
-- *dq-nats-data-ingest* GET files from an external SFTP server
-- *dq-nats-data-ingest* DELETE files from SFTP
-- sending these files to *clamav-api* with destination *localhost:8080*
-- files are being sent from *clamav-api* to *clamav* with destination *localhost:3310*
-- *OK* or *!OK* response text is sent back to *dq-nats-data-ingest*
-  - *IF OK* file is uploaded to S3 and deleted from local storage
-  - *IF !OK* file is moved to quarantine on the PVC
 
 ## Drone secrets
 
