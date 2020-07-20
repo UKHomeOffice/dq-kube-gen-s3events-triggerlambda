@@ -47,6 +47,23 @@ gens3events
 Run a one time instance of the job:-
 ```
 kubectl create job dq-athena-partition-maintenance --from=cronjob/dq-athena-partition-maintenance
+```
+
+## Variables
+See below a list of variables that are required, and also some that are optional
+
+|  Variable name           |    example    | description                                                                                     | required |
+| ------------------------ | ------------- | ------------------------------------------------------------------------------------------------| -------- |
+|    LAMBDA_FUNC            | s3-athena-log | Location of Athena log files  
+|    WAIT_SEC            | 60 | Location of Athena log files                                                                   |    Y     |
+|    S3_BUCKET         | s3-bucket-csv | S3 bucket that contains the CSV file                                                            |    Y     |
+|    LAST_MOD_DTTIME_START           | file.csv      | Location of the CSV file. Can be a filename, or a prefix + filename (a/path/to/csv.file)        |    Y     |
+|    AWS_ACCESS_KEY_ID     | ABCD          | AWS access key ID                                                                               |    Y     |
+|    AWS_SECRET_ACCESS_KEY | ABCD1234      | AWS secret access key                                                                           |    Y     |
+|    AWS_DEFAULT_REGION    | eu-west-2     | AWS default region   
+                                                                           |    Y     |    
+
+
 
 ## Structure
 
@@ -67,7 +84,6 @@ kubectl create job dq-athena-partition-maintenance --from=cronjob/dq-athena-part
     - *eicar.com*: File containing a test virus string
 - **kube/**
   - *deployment.yml*: describe a Kubernetes POD deployment
-  - *pvc.yml*: declare a Persistent Volume in Kubernetes
   - *secret.yml*: list the Drone secrets passed to the containers during deployment  
 - *.drone.yml*: CI deployment configuration
 - *LICENSE*: MIT license file
