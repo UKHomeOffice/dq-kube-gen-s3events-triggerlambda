@@ -54,7 +54,7 @@ See below a list of variables that are required, and also some that are optional
 
 |  Variable name           |    example    | description                                                                                     | required |
 | ------------------------ | ------------- | ------------------------------------------------------------------------------------------------| -------- |
-|    LAMBDA_FUNC            | arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-test-trigger | Lambda Function that should be triggered  
+|    LAMBDA_FUNC            | arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-test-trigger | Lambda Function that should be triggered |    Y     | 
 |    WAIT_SEC            | 60 | Seconds to wait before generating the next notifications and triggering the next lambda                                                                   |    Y     |
 |    S3_BUCKET         | s3-dq-api-cdlz-msk-test | S3 bucket that contains files that need to be process file                                                            |    Y     |
 |    LAST_MOD_DTTIME_START         | 2020-07-09 10:55:31 | Starting range of Last Modified date time for files that need reprocessing                                                             |    Y     |
