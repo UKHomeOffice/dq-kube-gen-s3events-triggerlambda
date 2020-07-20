@@ -65,13 +65,10 @@ if __name__ == '__main__':
     s3_lmdt_end = os.environ['LAST_MOD_DTTIME_END']
     s3_prefix = os.environ['S3_PREFIX']
     s3_suffix = os.environ['S3_SUFFIX']
-    CSV_S3_BUCKET = os.environ['CSV_S3_BUCKET']
-    CSV_S3_FILE = os.environ['CSV_S3_FILE']
+    wait_sec = os.environ['WAIT_SEC']
+
 
     LOG_FILE = "/APP/gen-s3event-notification.log"
-
-    env='default'
-    namespace = 'test'
     #os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
     #'2020-07-09 10:55:31'
 
