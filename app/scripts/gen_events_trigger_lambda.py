@@ -8,7 +8,7 @@ import os
 import sys
 import time
 import random
-import datetime
+#import datetime
 import logging
 from logging.handlers import TimedRotatingFileHandler
 from dateutil.relativedelta import relativedelta
@@ -113,7 +113,7 @@ def send_message_to_slack(text):
             sys.exc_info()[2].tb_lineno)
         LOGGER.error(str(err))
 
-def get_matching_s3_objects(bucket, prefix="", suffix="",stdt, endt):
+def get_matching_s3_objects(bucket,stdt, endt, prefix="", suffix=""):
     """
     Generate objects in an S3 bucket.
 
@@ -155,7 +155,7 @@ def get_matching_s3_objects(bucket, prefix="", suffix="",stdt, endt):
                     yield obj
 
 
-def get_matching_s3_keys(bucket, prefix="", suffix="", stdt, endt):
+def get_matching_s3_keys(bucket, stdt, endt, prefix="", suffix=""):
     """
     Generate the keys in an S3 bucket.
 
@@ -163,7 +163,7 @@ def get_matching_s3_keys(bucket, prefix="", suffix="", stdt, endt):
     :param prefix: Only fetch keys that start with this prefix (optional).
     :param suffix: Only fetch keys that end with this suffix (optional).
     """
-    for obj in get_matching_s3_objects(bucket, prefix, suffix, stdt, endt):
+    for obj in get_matching_s3_objects(bucket, stdt, endt, prefix, suffix):
         yield obj
 
 
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     #os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
     #'2020-07-09 10:55:31'
 
-    for reprocessobj in get_matching_s3_keys(bucket_name, s3_prefix, s3_suffix, s3_lmdt_start, s3_lmdt_end):
+    for reprocessobj in get_matching_s3_keys(bucket_name, s3_lmdt_start, s3_lmdt_end, s3_prefix, s3_suffix):
         payload3 = json.dumps({
             "Records":[{
                 "s3":{
