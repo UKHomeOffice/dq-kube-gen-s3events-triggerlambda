@@ -5,23 +5,6 @@ import pytz
 import json
 
 
-'''
-client = boto3.client("s3")
-
-bucket_name = 's3-dq-api-cdlz-msk-test'
-
-paginator = client.get_paginator("list_objects_v2")
-operation_parameters = {'Bucket': 's3-dq-api-cdlz-msk-test',
-                        'Prefix': 'parsed'}
-
-for page in paginator.paginate(**operation_parameters):
-    print(page["Contents"])
-
-'''
-
-# 'LastModified': datetime.datetime(2020, 7, 2, 11, 26, 16, tzinfo=tzutc()), 'ETag': '"f119021d79f6e4e206ff9a8428b3c12d"', 'Size': 21540, 'StorageClass': 'STANDARD'}, {'Key': 'parsed/2020-07-02/12:23:59.764861894/PARSED_20200702_0830_9999.jsonl', 'LastModified': datetime.datetime(2020, 7, 2, 11, 39, 58, tzinfo=tzutc()), 'ETag': '"642bc3daca988bab17a2d0ca02f394cc"', 'Size': 108702, 'StorageClass': 'STANDARD'}, {'Key': 'parsed/2020-07-02/13:09:59.764861894/PARSED_20200702_0840_9899.jsonl',
-
-
 def get_matching_s3_objects(bucket, prefix="", suffix=""):
     """
     Generate objects in an S3 bucket.
@@ -59,7 +42,6 @@ def get_matching_s3_objects(bucket, prefix="", suffix=""):
                 utc=pytz.UTC
                 lower_cutoffdt = utc.localize(datetime.strptime('2020-07-09 10:55:31', '%Y-%m-%d %H:%M:%S'))
                 upper_cutoffdt = utc.localize(datetime.strptime('2020-07-13 10:21:08', '%Y-%m-%d %H:%M:%S'))
-                #print(lmd)
                 if key.endswith(suffix) and lmd > lower_cutoffdt and lmd < upper_cutoffdt:
                     yield obj
 
@@ -73,7 +55,6 @@ def get_matching_s3_keys(bucket, prefix="", suffix=""):
     :param suffix: Only fetch keys that end with this suffix (optional).
     """
     for obj in get_matching_s3_objects(bucket, prefix, suffix):
-        #yield obj["Key"]
         yield obj
 
 
@@ -89,8 +70,7 @@ if __name__ == '__main__':
 
     env='default'
     namespace = 'test'
-
-    os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
+    #os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
 
     for reprocessobj in get_matching_s3_keys(bucket_name, "parsed", "jsonl"):
         payload3 = json.dumps({
@@ -108,9 +88,7 @@ if __name__ == '__main__':
                             }
                         }]
                     })
-        #print(reprocesskey)
-        #print(payload3['Records'][0]['s3']['bucket']['name'])
-        #print(payload3['Records'][0]['s3']['object']['key'])
+
 
         #Trigger lambda
         client = boto3.client('lambda')
