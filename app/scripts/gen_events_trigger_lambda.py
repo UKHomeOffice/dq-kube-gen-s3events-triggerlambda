@@ -5,7 +5,7 @@ import pytz
 import json
 
 
-def get_matching_s3_objects(bucket, prefix="", suffix=""):
+def get_matching_s3_objects(bucket, prefix="", suffix="",stdt, endt):
     """
     Generate objects in an S3 bucket.
 
@@ -40,13 +40,13 @@ def get_matching_s3_objects(bucket, prefix="", suffix=""):
                 key = obj["Key"]
                 lmd =  obj["LastModified"]
                 utc=pytz.UTC
-                lower_cutoffdt = utc.localize(datetime.strptime('2020-07-09 10:55:31', '%Y-%m-%d %H:%M:%S'))
-                upper_cutoffdt = utc.localize(datetime.strptime('2020-07-13 10:21:08', '%Y-%m-%d %H:%M:%S'))
+                lower_cutoffdt = utc.localize(datetime.strptime(stdt, '%Y-%m-%d %H:%M:%S'))
+                upper_cutoffdt = utc.localize(datetime.strptime(endt, '%Y-%m-%d %H:%M:%S'))
                 if key.endswith(suffix) and lmd > lower_cutoffdt and lmd < upper_cutoffdt:
                     yield obj
 
 
-def get_matching_s3_keys(bucket, prefix="", suffix=""):
+def get_matching_s3_keys(bucket, prefix="", suffix="", stdt, endt):
     """
     Generate the keys in an S3 bucket.
 
@@ -54,15 +54,17 @@ def get_matching_s3_keys(bucket, prefix="", suffix=""):
     :param prefix: Only fetch keys that start with this prefix (optional).
     :param suffix: Only fetch keys that end with this suffix (optional).
     """
-    for obj in get_matching_s3_objects(bucket, prefix, suffix):
+    for obj in get_matching_s3_objects(bucket, prefix, suffix, stdt, endt):
         yield obj
 
 
 if __name__ == '__main__':
     triggerlambda = os.environ['LAMBDA_FUNC']
     bucket_name = os.environ['S3_BUCKET']
-    CSV_S3_FILE = os.environ['CSV_S3_FILE']
-    ATHENA_LOG = os.environ['ATHENA_LOG']
+    s3_lmdt_start = os.environ['LAST_MOD_DTTIME_START']
+    s3_lmdt_end = os.environ['LAST_MOD_DTTIME_END']
+    s3_prefix = os.environ['S3_PREFIX']
+    s3_suffix = os.environ['S3_SUFFIX']
     CSV_S3_BUCKET = os.environ['CSV_S3_BUCKET']
     CSV_S3_FILE = os.environ['CSV_S3_FILE']
 
@@ -71,8 +73,9 @@ if __name__ == '__main__':
     env='default'
     namespace = 'test'
     #os.environ["AWS_DEFAULT_REGION"] = "eu-west-2"
+    #'2020-07-09 10:55:31'
 
-    for reprocessobj in get_matching_s3_keys(bucket_name, "parsed", "jsonl"):
+    for reprocessobj in get_matching_s3_keys(bucket_name, s3_prefix, s3_suffix, s3_lmdt_start, s3_lmdt_end):
         payload3 = json.dumps({
             "Records":[{
                 "s3":{
