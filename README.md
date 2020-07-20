@@ -54,14 +54,14 @@ See below a list of variables that are required, and also some that are optional
 
 |  Variable name           |    example    | description                                                                                     | required |
 | ------------------------ | ------------- | ------------------------------------------------------------------------------------------------| -------- |
-|    LAMBDA_FUNC            | s3-athena-log | Location of Athena log files  
-|    WAIT_SEC            | 60 | Location of Athena log files                                                                   |    Y     |
-|    S3_BUCKET         | s3-bucket-csv | S3 bucket that contains the CSV file                                                            |    Y     |
-|    LAST_MOD_DTTIME_START           | file.csv      | Location of the CSV file. Can be a filename, or a prefix + filename (a/path/to/csv.file)        |    Y     |
+|    LAMBDA_FUNC            | s3-athena-log | Lambda Function that should be triggered  
+|    WAIT_SEC            | 60 | Seconds to wait before generating the next notifications and triggering the next lambda                                                                   |    Y     |
+|    S3_BUCKET         | s3-bucket-csv | S3 bucket that contains files that need to be process file                                                            |    Y     |
+|    LAST_MOD_DTTIME_START         | 2020-07-09 10:55:31 | Starting range of Last Modified date time for files that need reprocessing                                                             |    Y     |
+|    LAST_MOD_DTTIME_END           | 2020-07-09 10:55:31      | End of the range of Last Modified date time for files that need reprocessing        |    Y     |
 |    AWS_ACCESS_KEY_ID     | ABCD          | AWS access key ID                                                                               |    Y     |
 |    AWS_SECRET_ACCESS_KEY | ABCD1234      | AWS secret access key                                                                           |    Y     |
-|    AWS_DEFAULT_REGION    | eu-west-2     | AWS default region   
-                                                                           |    Y     |    
+|    AWS_DEFAULT_REGION    | eu-west-2     | AWS default region               |    Y     |    
 
 
 
