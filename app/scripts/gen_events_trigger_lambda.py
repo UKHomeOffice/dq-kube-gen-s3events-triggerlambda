@@ -221,6 +221,7 @@ if __name__ == '__main__':
             print(response)
 
             #Introduce Wait. Don't trigger the next event immediately
+            time.sleep(int(wait_sec))
 
         except Exception as err:
             LOGGER.error(str(err))
