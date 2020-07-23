@@ -1,17 +1,17 @@
 pipeline:
 
   build:
-    # image: ukhomeoffice/drone-docker
-    # repo: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda
-    # secrets: [ docker_username, docker_password ]
-    # registry: quay.io
-    # context: app
-    # dockerfile: app/Dockerfile
-    # force_tag: true
-    # tags:
-    #   - ${DRONE_COMMIT_SHA}
+    image: ukhomeoffice/drone-docker
+    repo: quay.io/ukhomeofficedigital/trivyscanner
+    secrets: [ docker_username, docker_password ]
+    registry: quay.io
+    dockerfile: Dockerfile
+    force_tag: true
+    tags:
+      - ${DRONE_COMMIT_SHA}
+      - ${DRONE_BUILD_NUMBER}
     when:
-      event: push
+      branch: build/*
 
   # deploy_to_dev:
   #   image: quay.io/ukhomeofficedigital/kd
