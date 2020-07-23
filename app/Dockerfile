@@ -5,7 +5,7 @@ WORKDIR /APP
 
 RUN mkdir -p /APP/scripts
 
-COPY scripts/ /APP/scripts/
+COPY app/scripts/ /APP/scripts/
 
 RUN apk add --no-cache --quiet --update
 
