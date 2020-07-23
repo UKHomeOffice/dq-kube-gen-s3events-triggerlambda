@@ -2,7 +2,7 @@ pipeline:
 
   build:
     image: ukhomeoffice/drone-docker
-    repo: quay.io/ukhomeofficedigital/trivyscanner
+    repo: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda
     secrets: [ docker_username, docker_password ]
     registry: quay.io
     dockerfile: Dockerfile
