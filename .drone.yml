@@ -5,7 +5,7 @@ pipeline:
     repo: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda
     secrets: [ docker_username, docker_password ]
     registry: quay.io
-    dockerfile: Dockerfile
+    dockerfile: app/Dockerfile
     force_tag: true
     tags:
       - ${DRONE_COMMIT_SHA}
