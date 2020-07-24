@@ -13,40 +13,45 @@ pipeline:
     when:
       branch: build/*
 
-  # deploy_to_dev:
-  #   image: quay.io/ukhomeofficedigital/kd
-  #   environment:
-  #     - KUBE_NAMESPACE=dq-apps-notprod
-  #     - INSECURE_SKIP_TLS_VERIFY=true
-  #   commands:
-  #     - export KUBE_TOKEN=$$NOTPROD_KUBE_TOKEN
-  #     - export KUBE_SERVER=$$NOTPROD_KUBE_SERVER
-  #     - export S3_BUCKET=$$NOTPROD_S3_BUCKET
-  #     - export LAMBDA_FUNC=$$NOTPROD_LAMBDA_FUNC
-  #     - export LAST_MOD_DTTIME_START=$$NOTPROD_LAST_MOD_DTTIME_START
-  #     - export LAST_MOD_DTTIME_END=$$NOTPROD_LAST_MOD_DTTIME_END
-  #     - export S3_PREFIX=$$NOTPROD_S3_PREFIX
-  #     - export S3_SUFFIX=$$NOTPROD_S3_SUFFIX
-  #     - export WAIT_SEC=$$NOTPROD_WAIT_SEC
-  #     - export AWS_ACCESS_KEY_ID=$$NOTPROD_AWS_ACCESS_KEY_ID
-  #     - export AWS_SECRET_ACCESS_KEY=$$NOTPROD_AWS_SECRET_ACCESS_KEY
-  #     - export AWS_DEFAULT_REGION=$$NOTPROD_AWS_DEFAULT_REGION
-  #     - kd -f kube/secret.yml
-  #   secrets:
-  #     - NOTPROD_KUBE_TOKEN
-  #     - NOTPROD_KUBE_SERVER
-  #     - NOTPROD_S3_BUCKET
-  #     - NOTPROD_LAMBDA_FUNC
-  #     - NOTPROD_LAST_MOD_DTTIME_START
-  #     - NOTPROD_LAST_MOD_DTTIME_END
-  #     - NOTPROD_S3_PREFIX
-  #     - NOTPROD_S3_SUFFIX
-  #     - NOTPROD_WAIT_SEC
-  #     - NOTPROD_AWS_ACCESS_KEY_ID
-  #     - NOTPROD_AWS_SECRET_ACCESS_KEY
-  #     - NOTPROD_AWS_DEFAULT_REGION
-  #   when:
-  #     event: push
+    deploy_to_dev:
+      image: quay.io/ukhomeofficedigital/kd
+      environment:
+        - KUBE_NAMESPACE=dq-apps-notprod
+        - INSECURE_SKIP_TLS_VERIFY=true
+        - S3_BUCKET=$$NOTPROD_S3_BUCKET
+        - LAMBDA_FUNC=$$NOTPROD_LAMBDA_FUNC
+        - LAST_MOD_DTTIME_START=$$NOTPROD_LAST_MOD_DTTIME_START
+        - LAST_MOD_DTTIME_END=$$NOTPROD_LAST_MOD_DTTIME_END
+        - S3_PREFIX=$$NOTPROD_S3_PREFIX
+        - S3_SUFFIX=$$NOTPROD_S3_SUFFIX
+      commands:
+        - export KUBE_TOKEN=$$NOTPROD_KUBE_TOKEN
+        - export KUBE_SERVER=$$NOTPROD_KUBE_SERVER
+        - export S3_BUCKET=$$NOTPROD_S3_BUCKET
+        - export LAMBDA_FUNC=$$NOTPROD_LAMBDA_FUNC
+        - export LAST_MOD_DTTIME_START=$$NOTPROD_LAST_MOD_DTTIME_START
+        - export LAST_MOD_DTTIME_END=$$NOTPROD_LAST_MOD_DTTIME_END
+        - export S3_PREFIX=$$NOTPROD_S3_PREFIX
+        - export S3_SUFFIX=$$NOTPROD_S3_SUFFIX
+        - export WAIT_SEC=$$NOTPROD_WAIT_SEC
+        - export AWS_ACCESS_KEY_ID=$$NOTPROD_AWS_ACCESS_KEY_ID
+        - export AWS_SECRET_ACCESS_KEY=$$NOTPROD_AWS_SECRET_ACCESS_KEY
+        - export AWS_DEFAULT_REGION=$$NOTPROD_AWS_DEFAULT_REGION
+        - kd -f kube/secret.yml -f job.yaml
+      secrets:
+        - NOTPROD_KUBE_TOKEN
+        # - NOTPROD_S3_BUCKET
+        # - NOTPROD_LAMBDA_FUNC
+        # - NOTPROD_LAST_MOD_DTTIME_START
+        # - NOTPROD_LAST_MOD_DTTIME_END
+        # - NOTPROD_S3_PREFIX
+        # - NOTPROD_S3_SUFFIX
+        # - NOTPROD_WAIT_SEC
+        - NOTPROD_AWS_ACCESS_KEY_ID
+        - NOTPROD_AWS_SECRET_ACCESS_KEY
+        - NOTPROD_AWS_DEFAULT_REGION
+      when:
+        event: push
   #
   # deploy_to_prod:
   #   image: quay.io/ukhomeofficedigital/kd
