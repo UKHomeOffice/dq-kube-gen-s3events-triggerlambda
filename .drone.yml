@@ -22,6 +22,13 @@ pipeline:
       # - LAST_MOD_DTTIME_END=$$NOTPROD_LAST_MOD_DTTIME_END
       # - S3_PREFIX=$$NOTPROD_S3_PREFIX
       # - S3_SUFFIX=$$NOTPROD_S3_SUFFIX
+      - S3_BUCKET=s3-dq-api-cdlz-msk-test
+      - LAMBDA_FUNC=arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-test-trigger
+      - LAST_MOD_DTTIME_START=2020-07-09 10:55:31
+      - LAST_MOD_DTTIME_END=2020-07-09 10:55:31
+      - S3_PREFIX=parsed
+      - S3_SUFFIX=jsonl
+      - WAIT_SEC=60
     commands:
       - export AWS_ACCESS_KEY_ID=$$NOTPROD_AWS_ACCESS_KEY_ID
       - export AWS_SECRET_ACCESS_KEY=$$NOTPROD_AWS_SECRET_ACCESS_KEY
