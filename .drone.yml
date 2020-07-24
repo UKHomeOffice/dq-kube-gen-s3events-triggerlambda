@@ -26,6 +26,7 @@ pipeline:
       - export AWS_ACCESS_KEY_ID=$$NOTPROD_AWS_ACCESS_KEY_ID
       - export AWS_SECRET_ACCESS_KEY=$$NOTPROD_AWS_SECRET_ACCESS_KEY
       - export AWS_DEFAULT_REGION=$$NOTPROD_AWS_DEFAULT_REGION
+      - python scripts/gen_events_trigger_lambda.py
     secrets:
       - NOTPROD_AWS_ACCESS_KEY_ID
       - NOTPROD_AWS_SECRET_ACCESS_KEY
