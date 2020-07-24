@@ -17,12 +17,6 @@ spec:
           runAsNonRoot: true
           runAsUser: 1000
         resources:
-          limits:
-            cpu: {{.NATS_CPU_LIMIT}}
-            memory: {{.NATS_RAM_LIMIT}}
-          requests:
-            cpu: {{.NATS_CPU_REQUEST}}
-            memory: {{.NATS_RAM_REQUEST}}
         env:
           - name: S3_BUCKET
             valueFrom:
