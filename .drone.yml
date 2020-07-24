@@ -14,7 +14,7 @@ pipeline:
       branch: build/*
 
   run-gen-s3events-trigger-notprod:
-    image: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda
+    image: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda:5
     environment:
       # - S3_BUCKET=$$NOTPROD_S3_BUCKET
       # - LAMBDA_FUNC=$$NOTPROD_LAMBDA_FUNC
