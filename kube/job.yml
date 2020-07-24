@@ -12,6 +12,7 @@ spec:
       containers:
       - name: processing
         image: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda:5
+        command: ["echo", "helloworld"]
         imagePullPolicy: Always
         securityContext:
           runAsNonRoot: true
