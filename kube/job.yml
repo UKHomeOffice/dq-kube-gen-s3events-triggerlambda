@@ -17,13 +17,6 @@ spec:
         securityContext:
           runAsNonRoot: true
           runAsUser: 1000
-        resources:
-          limits:
-            cpu: {{.GEN_CPU_LIMIT}}
-            memory: {{.GEN_RAM_LIMIT}}
-          requests:
-            cpu: {{.GEN_CPU_REQUEST}}
-            memory: {{.GEN_RAM_REQUEST}}
         # env:
         #   - name: S3_BUCKET
         #     valueFrom:
