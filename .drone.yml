@@ -22,7 +22,7 @@ pipeline:
       # - LAST_MOD_DTTIME_END=$$NOTPROD_LAST_MOD_DTTIME_END
       # - S3_PREFIX=$$NOTPROD_S3_PREFIX
       # - S3_SUFFIX=$$NOTPROD_S3_SUFFIX
-      - S3_BUCKET=s3-dq-api-cdlz-msk-test
+      - S3_BUCKET=s3-dq-api-cdlz-msk-notprod
       - LAMBDA_FUNC=arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-test-trigger
       - LAST_MOD_DTTIME_START=2020-07-09 10:55:31
       - LAST_MOD_DTTIME_END=2020-07-09 10:55:31
