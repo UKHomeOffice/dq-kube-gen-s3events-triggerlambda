@@ -1,0 +1,76 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: dq-kube-gen-s3events-triggerlambda
+spec:
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: processing
+        image: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda:5
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+        resources:
+          limits:
+            cpu: {{.NATS_CPU_LIMIT}}
+            memory: {{.NATS_RAM_LIMIT}}
+          requests:
+            cpu: {{.NATS_CPU_REQUEST}}
+            memory: {{.NATS_RAM_REQUEST}}
+        env:
+          - name: S3_BUCKET
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: S3_REGION_NAME
+          - name: LAMBDA_FUNC
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: LAMBDA_FUNC
+          - name: LAST_MOD_DTTIME_START
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: LAST_MOD_DTTIME_START
+          - name: LAST_MOD_DTTIME_END
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: LAST_MOD_DTTIME_END
+          - name: S3_PREFIX
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: S3_PREFIX
+          - name: S3_SUFFIX
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: S3_SUFFIX
+          - name: WAIT_SEC
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: WAIT_SEC
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: AWS_ACCESS_KEY_ID
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: AWS_SECRET_ACCESS_KEY
+          - name: AWS_DEFAULT_REGION
+            valueFrom:
+              secretKeyRef:
+                name: gen-s3events-triggerlambda
+                key: AWS_DEFAULT_REGION
