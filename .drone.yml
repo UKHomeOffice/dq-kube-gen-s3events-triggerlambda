@@ -19,7 +19,7 @@ pipeline:
       - S3_BUCKET=s3-dq-api-cdlz-msk-test
       - LAMBDA_FUNC=arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-test-trigger
       - LAST_MOD_DTTIME_START=2020-07-09 10:55:31
-      - LAST_MOD_DTTIME_END=2020-07-09 10:55:31
+      - LAST_MOD_DTTIME_END=2020-07-09 15:55:31
       - S3_PREFIX=parsed
       - S3_SUFFIX=jsonl
       - WAIT_SEC=60
@@ -41,7 +41,7 @@ pipeline:
       - S3_BUCKET=s3-dq-api-cdlz-msk-notprod
       - LAMBDA_FUNC=arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-notprod-trigger
       - LAST_MOD_DTTIME_START=2020-07-09 10:55:31
-      - LAST_MOD_DTTIME_END=2020-07-09 10:55:31
+      - LAST_MOD_DTTIME_END=2020-07-09 15:55:31
       - S3_PREFIX=parsed
       - S3_SUFFIX=jsonl
       - WAIT_SEC=60
@@ -63,7 +63,7 @@ pipeline:
       - S3_BUCKET=s3-dq-api-cdlz-msk-prod
       - LAMBDA_FUNC=arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-notprod-trigger
       - LAST_MOD_DTTIME_START=2020-07-09 10:55:31
-      - LAST_MOD_DTTIME_END=2020-07-09 10:55:31
+      - LAST_MOD_DTTIME_END=2020-07-09 15:55:31
       - S3_PREFIX=parsed
       - S3_SUFFIX=jsonl
       - WAIT_SEC=60
