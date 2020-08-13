@@ -68,3 +68,7 @@ See below a list of variables that are required, and also some that are optional
 ## Drone secrets
 
 Environmental variables are set in Drone based on secrets listed in the *.drone.yml* file and they are passed to Kubernetes as required.
+
+## Running the build
+
+This repo will generate events for environments independently. If you want to run Events for notprod, make a branch with the prefix notprod/. If you want to run Events for prod, make a branch with the prefix prod/. Once you make a branch the change will be LAST_MOD_DTTIME_START and LAST_MOD_DTTIME_END to that which you specify. Commit your branch and push, this will trigger the build in the respective environment. 
