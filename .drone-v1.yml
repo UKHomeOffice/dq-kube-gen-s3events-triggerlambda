@@ -1,0 +1,111 @@
+---
+kind: pipeline
+name: default
+type: kubernetes
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  pull: if-not-exists
+  image: plugins/docker
+  settings:
+    dockerfile: app/Dockerfile
+    force_tag: true
+    registry: quay.io
+    repo: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda
+    tags:
+    - ${DRONE_COMMIT_SHA}
+    - ${DRONE_BUILD_NUMBER}
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_password
+    DOCKER_USERNAME:
+      from_secret: docker_username
+  when:
+    branch:
+    - build/*
+
+- name: run-gen-s3events-trigger-test
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda:5
+  commands:
+  - export AWS_ACCESS_KEY_ID=$$TEST_AWS_ACCESS_KEY_ID
+  - export AWS_SECRET_ACCESS_KEY=$$TEST_AWS_SECRET_ACCESS_KEY
+  - export AWS_DEFAULT_REGION=$$AWS_DEFAULT_REGION
+  - python app/scripts/gen_events_trigger_lambda.py
+  environment:
+    AWS_DEFAULT_REGION:
+      from_secret: AWS_DEFAULT_REGION
+    LAMBDA_FUNC: arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-test-trigger
+    LAST_MOD_DTTIME_END: 2020-07-09 15:55:31
+    LAST_MOD_DTTIME_START: 2020-07-09 10:55:31
+    S3_BUCKET: s3-dq-api-cdlz-msk-test
+    S3_PREFIX: parsed
+    S3_SUFFIX: jsonl
+    TEST_AWS_ACCESS_KEY_ID:
+      from_secret: TEST_AWS_ACCESS_KEY_ID
+    TEST_AWS_SECRET_ACCESS_KEY:
+      from_secret: TEST_AWS_SECRET_ACCESS_KEY
+    WAIT_SEC: 60
+  when:
+    branch:
+    - test/*
+
+- name: run-gen-s3events-trigger-notprod
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda:5
+  commands:
+  - export AWS_ACCESS_KEY_ID=$$NOTPROD_AWS_ACCESS_KEY_ID
+  - export AWS_SECRET_ACCESS_KEY=$$NOTPROD_AWS_SECRET_ACCESS_KEY
+  - export AWS_DEFAULT_REGION=$$AWS_DEFAULT_REGION
+  - python app/scripts/gen_events_trigger_lambda.py
+  environment:
+    AWS_DEFAULT_REGION:
+      from_secret: AWS_DEFAULT_REGION
+    LAMBDA_FUNC: arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-notprod-trigger
+    LAST_MOD_DTTIME_END: 2020-07-09 15:55:31
+    LAST_MOD_DTTIME_START: 2020-07-09 10:55:31
+    NOTPROD_AWS_ACCESS_KEY_ID:
+      from_secret: NOTPROD_AWS_ACCESS_KEY_ID
+    NOTPROD_AWS_SECRET_ACCESS_KEY:
+      from_secret: NOTPROD_AWS_SECRET_ACCESS_KEY
+    S3_BUCKET: s3-dq-api-cdlz-msk-notprod
+    S3_PREFIX: parsed
+    S3_SUFFIX: jsonl
+    WAIT_SEC: 60
+  when:
+    branch:
+    - notprod/*
+
+- name: run-gen-s3events-trigger-prod
+  pull: if-not-exists
+  image: quay.io/ukhomeofficedigital/dq-kube-gen-s3events-triggerlambda:5
+  commands:
+  - export AWS_ACCESS_KEY_ID=$$PROD_AWS_ACCESS_KEY_ID
+  - export AWS_SECRET_ACCESS_KEY=$$PROD_AWS_SECRET_ACCESS_KEY
+  - export AWS_DEFAULT_REGION=$$AWS_DEFAULT_REGION
+  - python app/scripts/gen_events_trigger_lambda.py
+  environment:
+    AWS_DEFAULT_REGIONS:
+      from_secret: AWS_DEFAULT_REGIONs
+    LAMBDA_FUNC: arn:aws:lambda:eu-west-2:797728447925:function:api-kafka-input-notprod-trigger
+    LAST_MOD_DTTIME_END: 2020-07-09 15:55:31
+    LAST_MOD_DTTIME_START: 2020-07-09 10:55:31
+    PROD_AWS_ACCESS_KEY_ID:
+      from_secret: PROD_AWS_ACCESS_KEY_ID
+    PROD_AWS_SECRET_ACCESS_KEY:
+      from_secret: PROD_AWS_SECRET_ACCESS_KEY
+    S3_BUCKET: s3-dq-api-cdlz-msk-prod
+    S3_PREFIX: parsed
+    S3_SUFFIX: jsonl
+    WAIT_SEC: 60
+  when:
+    branch:
+    - prod/*
+
+services:
+  - name: docker
+    image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
